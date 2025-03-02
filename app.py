@@ -5,15 +5,13 @@ app = Flask(__name__)
 # Define your verification token
 VERIFICATION_TOKEN = "ebay-verification-token-1234567890abcdef1234"
 
+# Add a route for the root URL
 @app.route('/')
 def home():
     return "Webhook endpoint is running!", 200
 
 @app.route('/ebay-notifications', methods=['GET', 'POST'])
 def ebay_notifications():
-    # Log all headers for debugging
-    print("All headers received:", request.headers)
-
     # Check for the verification token in the headers
     token = request.headers.get('X-Ebay-Verification-Token')
     print("Received token:", token)
