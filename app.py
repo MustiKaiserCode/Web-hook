@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Define your verification token (must be between 32-80 characters)
+# Define your verification token (must match the one in eBay's developer portal)
 VERIFICATION_TOKEN = "ebay-verification-token-1234567890abcdef1234"
 
 @app.route('/ebay-notifications', methods=['GET', 'POST'])
@@ -14,9 +14,15 @@ def ebay_notifications():
     if token != VERIFICATION_TOKEN:
         return jsonify({"error": "Unauthorized"}), 401
 
-    # Handle GET request (e.g., verification)
+    # Handle GET request (e.g., webhook verification)
     if request.method == 'GET':
-        return jsonify({"message": "GET request received"}), 200
+        # Extract the challenge_code from the query parameters
+        challenge_code = request.args.get('challenge_code')
+        if not challenge_code:
+            return jsonify({"error": "Missing challenge_code"}), 400
+        
+        # Return the challenge_code to complete verification
+        return jsonify({"challengeResponse": challenge_code}), 200
 
     # Handle POST request (e.g., process notification)
     elif request.method == 'POST':
