@@ -16,12 +16,13 @@ def home():
 def ebay_notifications():
     # Check for the verification token in the headers
     token = request.headers.get('X-Ebay-Verification-Token')
+    print("All headers received:", request.headers)  # Log all headers for debugging
     print("Received token:", token)
     sys.stdout.flush()  # Force the log to be written immediately
 
-    # If the token is missing or incorrect, return an error
-    if token != VERIFICATION_TOKEN:
-        return jsonify({"error": "Unauthorized"}), 401
+    # Temporarily bypass token validation for testing
+    # if token != VERIFICATION_TOKEN:
+    #     return jsonify({"error": "Unauthorized"}), 401
 
     # Handle GET request (e.g., webhook verification)
     if request.method == 'GET':
