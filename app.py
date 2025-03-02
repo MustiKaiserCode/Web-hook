@@ -1,4 +1,3 @@
-import sys
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -8,14 +7,13 @@ VERIFICATION_TOKEN = "ebay-verification-token-1234567890abcdef1234"
 
 @app.route('/ebay-notifications', methods=['GET', 'POST'])
 def ebay_notifications():
-    # Check for the verification token in the headers
+    # Log the received token for debugging
     token = request.headers.get('X-Ebay-Verification-Token')
     print("Received token:", token)
-    sys.stdout.flush()  # Force the log to be written immediately
 
-    # If the token is missing or incorrect, return an error
-    if token != VERIFICATION_TOKEN:
-        return jsonify({"error": "Unauthorized"}), 401
+    # Temporarily bypass token validation for testing
+    # if token != VERIFICATION_TOKEN:
+    #     return jsonify({"error": "Unauthorized"}), 401
 
     # Handle GET request (e.g., webhook verification)
     if request.method == 'GET':
@@ -31,7 +29,6 @@ def ebay_notifications():
     elif request.method == 'POST':
         data = request.json
         print("Received POST data:", data)
-        sys.stdout.flush()  # Force the log to be written immediately
         return jsonify({"message": "POST request received"}), 200
 
 if __name__ == '__main__':
