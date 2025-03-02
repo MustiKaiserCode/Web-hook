@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import hashlib
+import sys  # Add this import
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ def ebay_notifications():
     # Check for the verification token in the headers
     token = request.headers.get('X-Ebay-Verification-Token')
     print("Received token:", token)
+    sys.stdout.flush()  # Force the log to be written immediately
 
     # If the token is missing or incorrect, return an error
     if token != VERIFICATION_TOKEN:
@@ -42,6 +44,7 @@ def ebay_notifications():
     elif request.method == 'POST':
         data = request.json
         print("Received POST data:", data)
+        sys.stdout.flush()  # Force the log to be written immediately
         return jsonify({"message": "POST request received"}), 200
 
 if __name__ == '__main__':
