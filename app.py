@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import hashlib
 
 app = Flask(__name__)
 
@@ -26,9 +27,16 @@ def ebay_notifications():
         challenge_code = request.args.get('challenge_code')
         if not challenge_code:
             return jsonify({"error": "Missing challenge_code"}), 400
-        
-        # Return the challenge_code to complete verification
-        return jsonify({"challengeResponse": challenge_code}), 200
+
+        # Define the endpoint URL (must match the URL provided to eBay)
+        endpoint = "https://web-hook-1o1x.onrender.com/ebay-notifications"
+
+        # Hash the challenge_code, verification token, and endpoint URL
+        hash_input = challenge_code + VERIFICATION_TOKEN + endpoint
+        challenge_response = hashlib.sha256(hash_input.encode()).hexdigest()
+
+        # Return the challengeResponse in JSON format
+        return jsonify({"challengeResponse": challenge_response}), 200
 
     # Handle POST request (e.g., process notification)
     elif request.method == 'POST':
